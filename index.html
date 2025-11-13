@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Respuestas Rápidas - Lizto Software</title>
+
+  <style>
+    /* === ESTILOS GENERALES === */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: #121212; /* Fondo oscuro */
+      color: #f1f1f1;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* === ENCABEZADO === */
+    header {
+      text-align: center;
+      padding: 20px;
+      background-color: #1c1c1c;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    header h1 {
+      color: #00c3ff;
+      margin: 0;
+      text-shadow: 0 0 8px rgba(0, 195, 255, 0.4);
+    }
+
+    /* === CONTENEDOR PRINCIPAL === */
+    .main {
+      display: flex;
+      flex-direction: column; /* Ahora todo va de arriba a abajo */
+      flex: 1;
+      padding: 20px;
+      gap: 15px;
+    }
+
+    /* === SECCIÓN SUPERIOR (BOTONES) === */
+    .top-buttons {
+      display: flex;
+      flex-wrap: wrap; /* Si hay muchos botones, que bajen en filas */
+      gap: 10px;
+      background-color: #1e1e1e;
+      border: 1px solid #2a2a2a;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    .msg-btn {
+      padding: 10px 14px;
+      background-color: #2a2a2a;
+      border: 1px solid #3a3a3a;
+      color: #f1f1f1;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 14px;
+    }
+
+    .msg-btn:hover {
+      background-color: #00c3ff;
+      color: #121212;
+      transform: translateY(-2px);
+    }
+
+    /* === CAMPO DE NOMBRE === */
+    .input-box {
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    #userInput {
+      width: 100%;
+      max-width: 400px;
+      padding: 10px;
+      border: 1px solid #00c3ff;
+      border-radius: 8px;
+      background-color: #1e1e1e;
+      color: #f1f1f1;
+      outline: none;
+    }
+
+    #userInput:focus {
+      box-shadow: 0 0 8px rgba(0, 195, 255, 0.6);
+    }
+
+    /* === ÁREA DE MENSAJE Y BOTÓN DE COPIAR === */
+    .message-area {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      flex-grow: 1;
+    }
+
+    #messageBox {
+      width: 100%;
+      height: 300px;
+      background-color: #1c1c1c;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 15px;
+      color: #eaeaea;
+      resize: none;
+      font-size: 15px;
+      line-height: 1.5;
+      outline: none;
+    }
+
+    #copyBtn {
+      padding: 10px 20px;
+      background-color: #00c3ff;
+      color: #121212;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
+      height: 45px;
+      align-self: center;
+    }
+
+    #copyBtn:hover {
+      background-color: #00a8e1;
+    }
+
+    /* === SCROLL PERSONALIZADO === */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #00c3ff;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #1e1e1e;
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+      .message-area {
+        flex-direction: column;
+      }
+      #copyBtn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- === ENCABEZADO === -->
+  <header>
+    <h1>Mensajes Rápidos - Lizto Software</h1>
+  </header>
+
+  <!-- === CONTENEDOR PRINCIPAL === -->
+  <div class="main">
+
+    <!-- SECCIÓN DE BOTONES (ARRIBA) -->
+    <div class="top-buttons">
+      <button class="msg-btn" onclick="mostrarMensaje('repcontingencia')">Caso asignado</button>
+      <button class="msg-btn" onclick="mostrarMensaje('daysMessage')">Saludo Días</button>
+      <button class="msg-btn" onclick="mostrarMensaje('afternoonMessage')">Saludo Tardes</button>
+      <button class="msg-btn" onclick="mostrarMensaje('pagoRealizadoMessage')">Confirmación de Pago</button>
+      <button class="msg-btn" onclick="mostrarMensaje('pagoGraciasMessage')">Agradecimiento Pago</button>
+      <button class="msg-btn" onclick="mostrarMensaje('solicitarLinkMessage')">Solicitud Soporte Pago</button>
+      <button class="msg-btn" onclick="mostrarMensaje('despedidaMessage')">Despedida</button>
+      <button class="msg-btn" onclick="mostrarMensaje('linkReunionMessage')">Enlace Reunión</button>
+      <button class="msg-btn" onclick="mostrarMensaje('sinRespuesta')">Sin Respuesta</button>
+      <button class="msg-btn" onclick="mostrarMensaje('linkPago')">Link de Pago</button>
+      <button class="msg-btn" onclick="mostrarMensaje('pasoaPaso')">Paso a Paso</button>
+      <button class="msg-btn" onclick="mostrarMensaje('dameunMomento')">Dame un Momento</button>
+      <button class="msg-btn" onclick="mostrarMensaje('algoMas')">¿Algo Más?</button>
+    </div>
+
+    <div></div>
+
+    <!-- CAMPO DE NOMBRE -->
+    <div class="input-box">
+      <input type="text" id="userInput" placeholder="Nombre del cliente" oninput="actualizarMensajeActual()" />
+    </div>
+
+    <!-- CAJA DE TEXTO Y BOTÓN DE COPIAR -->
+    <div class="message-area">
+      <button id="copyBtn" onclick="copiarTexto()">Copiar</button>
+      <textarea id="messageBox" readonly placeholder="Selecciona un mensaje arriba..."></textarea>
+      
+    </div>
+  </div>
+
+  <script>
+    /* === MENSAJES PREDEFINIDOS === */
+    const mensajes = {
+      repcontingencia: "¿cómo estás? Hablas con Yeison del equipo de soporte de Lizto, me asignaron tu caso para poderte ayudar",
+      daysMessage: "buenos días, ¿cómo estás? Hablas con Yeison del equipo de soporte de Lizto. ¿Cómo puedo ayudarte?",
+      afternoonMessage: "buenas tardes, ¿cómo estás? Hablas con Yeison del equipo de soporte de Lizto. ¿Cómo puedo ayudarte?",
+      pagoRealizadoMessage: "¿cómo estás? Hablas con Yeison del equipo de soporte de Lizto. Mil gracias por el pago. Ya puedes ingresar.",
+      pagoGraciasMessage: "con mucho gusto, indícame el NIT del salón para solicitarlo al área contable.",
+      solicitarLinkMessage: "¿cómo estás? Hablas con Yeison del equipo de soporte de Lizto. Mil disculpas, el sistema entró en suspensión automática al no detectar el pago. ¿Me puedes enviar el soporte de pago y el NIT para verificarlo con contabilidad?",
+      despedidaMessage: "ha sido un gusto ayudarte. Si necesitas más ayuda, no dudes en contactarnos. ¡Te deseo un excelente día!",
+      linkReunionMessage: "al correo te acabamos de enviar el link de la reunión. ¿Me confirmas por favor si te llegó?",
+      sinRespuesta: "Esperamos que la solución brindada haya resuelto tu caso. Cuando tengas un momento, ¿podrías confirmarnos si todo está en orden? Al no tener respuesta, procederemos a cerrar el ticket, pero si tienes otra consulta estaremos atentos para ayudarte.",
+      linkPago: "puedes realizar el pago en este link:",
+      pasoaPaso: "En este paso a paso te mostramos cómo puedes hacerlo. Si tienes alguna duda, me comentas por favor.",
+      dameunMomento: "dame un momento por favor, vamos a verificar.",
+      algoMas: "con mucho gusto, ¿hay algo más en lo que te podamos colaborar?"
+    };
+
+    let mensajeActual = ""; // Guarda el mensaje seleccionado
+
+    // === Muestra el mensaje seleccionado ===
+    function mostrarMensaje(id) {
+      mensajeActual = id;
+      actualizarMensajeActual();
+    }
+
+    // === Inserta el nombre del cliente en el mensaje ===
+    function personalizarMensaje(mensaje) {
+      const nombre = document.getElementById("userInput").value.trim();
+      if (nombre) {
+        if (mensaje.startsWith("Queremos") || mensaje.startsWith("Esperamos")) {
+          return `${nombre}, ${mensaje}`;
+        } else {
+          return `Hola ${nombre}, ${mensaje}`;
+        }
+      }
+      return mensaje;
+    }
+
+    // === Actualiza el contenido del mensaje mostrado ===
+    function actualizarMensajeActual() {
+      if (!mensajeActual) return;
+      const mensajeBase = mensajes[mensajeActual];
+      document.getElementById("messageBox").value = personalizarMensaje(mensajeBase);
+    }
+
+    // === Copia el texto del mensaje ===
+    function copiarTexto() {
+      const box = document.getElementById("messageBox");
+      box.select();
+      document.execCommand("copy");
+      alert("Mensaje copiado al portapapeles ✅");
+    }
+  </script>
+</body>
+</html>
