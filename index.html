@@ -76,8 +76,17 @@
             padding: 10px;
             border-radius: 10px;
         }
+        
+        /* Contenedor para los botones de Saludo/Modificadores */
+        .modifier-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
 
-        .msg-btn, .agent-btn {
+        .msg-btn, .agent-btn, .modifier-btn {
             padding: 10px 14px;
             background-color: #2a2a2a;
             border: 1px solid #3a3a3a;
@@ -89,15 +98,25 @@
             /* Flex-grow para los botones de agente */
             flex-grow: 0;
         }
+        
+        /* Estilo para los botones Modificadores (Hola, Dame Momento, ¿Cómo puedo ayudar?) */
+        .modifier-btn {
+            font-size: 1.1em;
+            padding: 10px 15px;
+            background-color: #00c3ff; /* Color diferente para destacar */
+            color: #121212;
+            border-color: #00a8e1;
+            font-weight: bold;
+        }
 
-        .msg-btn:hover:not(.active), .agent-btn:hover:not(.active) {
+        .msg-btn:hover:not(.active), .agent-btn:hover:not(.active), .modifier-btn:hover:not(.active) {
             background-color: #00c3ff;
             color: #121212;
             transform: translateY(-2px);
         }
 
-        /* Estilo activo para agente y botón de hora */
-        .agent-btn.active, .time-btn.active {
+        /* Estilo activo para agente, botón de hora y los botones modificadores */
+        .agent-btn.active, .time-btn.active, .modifier-btn.active {
             background-color: #00c3ff;
             color: #121212;
             border-color: #00a8e1;
@@ -105,7 +124,17 @@
             box-shadow: 0 4px 8px rgba(0, 195, 255, 0.3);
         }
 
-        /* === CAMPOS DE TEXTO E INPUTS === */
+        /* Asegurar que los botones modificadores estén en una sola fila en escritorio */
+        @media (min-width: 768px) {
+            .modifier-buttons-container {
+                justify-content: space-evenly;
+            }
+            .modifier-btn {
+                flex-grow: 0;
+            }
+        }
+        
+        /* Resto de estilos sin cambios (inputs, textarea, etc.) */
         .input-box, .agent-input-box {
             display: flex;
             flex-direction: column;
@@ -127,7 +156,6 @@
             box-shadow: 0 0 8px rgba(0, 195, 255, 0.6);
         }
 
-        /* === ÁREA DE MENSAJE === */
         .message-area {
             display: flex;
             align-items: flex-start;
@@ -150,7 +178,6 @@
             flex-grow: 1;
         }
 
-        /* === SECCIÓN DE AGENDAMIENTOS ESPECÍFICA === */
         .agendamiento-buttons {
             display: flex;
             gap: 10px;
@@ -164,7 +191,6 @@
             min-height: 45px;
         }
 
-        /* Botones de Copiar */
         #copyBtn, #copyAgentBtn {
             padding: 10px 20px;
             background-color: #00c3ff;
@@ -192,7 +218,6 @@
             margin-top: 10px;
         }
 
-        /* === ESTILO DE NOTIFICACIÓN DE COPIADO === */
         #copy-notification {
             position: fixed;
             top: 20px;
@@ -207,7 +232,6 @@
             z-index: 1000;
         }
 
-        /* === SCROLL PERSONALIZADO === */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -219,7 +243,6 @@
             background: #1e1e1e;
         }
 
-        /* === RESPONSIVE === */
         @media (max-width: 992px) {
             .main-container {
                 flex-direction: column;
@@ -250,6 +273,12 @@
 
         <div class="main-column mensajes-rapidos">
             <div class="section-title">Mensajes de Soporte</div>
+            
+            <div class="modifier-buttons-container">
+                <button id="holaBtn" class="modifier-btn" onclick="toggleHola()">Hola (Inicio)</button>
+                <button id="dameMomentoBtn" class="modifier-btn" onclick="toggleDameMomento()">Dame un momento</button>
+                <button id="comoAyudarBtn" class="modifier-btn" onclick="toggleComoAyudar()">¿Cómo puedo ayudar?</button>
+            </div>
 
             <div class="top-buttons">
                 <button class="msg-btn" onclick="mostrarMensaje('repcontingencia')">Caso asignado</button>
@@ -307,8 +336,8 @@
          * ======================================================= */
         const mensajes = {
             repcontingencia: "¿cómo estás? Hablas con Yeison del equipo de soporte de Lizto, me asignaron tu caso para poderte ayudar",
-            daysMessage: "buenos días, ¿cómo estás? Hablas con Yeison del equipo de soporte de Lizto. ¿Cómo puedo ayudarte?",
-            afternoonMessage: "buenas tardes, ¿cómo estás? Hablas con Yeison del equipo de soporte de Lizto. ¿Cómo puedo ayudarte?",
+            daysMessage: "buenos días, ¿cómo estás? Hablas con Yeison del equipo de soporte de Lizto. ",
+            afternoonMessage: "buenas tardes, ¿cómo estás? Hablas con Yeison del equipo de soporte de Lizto. ",
             pagoRealizadoMessage: "¿cómo estás? Hablas con Yeison del equipo de soporte de Lizto. Mil gracias por el pago. Ya puedes ingresar.",
             pagoGraciasMessage: "con mucho gusto, indícame el NIT del salón para solicitarlo al área contable.",
             solicitarLinkMessage: "¿cómo estás? Hablas con Yeison del equipo de soporte de Lizto. Mil disculpas, el sistema entró en suspensión automática al no detectar el pago. ¿Me puedes enviar el soporte de pago y el NIT para verificarlo con contabilidad?",
@@ -322,27 +351,126 @@
         };
 
         let mensajeActual = ""; // Guarda el ID del mensaje seleccionado
+        let incluirHola = false; // Estado para el botón "Hola"
+        let incluirDameMomento = false; // Nuevo estado para "Dame un momento por favor"
+        let incluirComoAyudar = false; // Nuevo estado para "¿Cómo puedo ayudarte?"
 
         // Muestra el mensaje seleccionado
         function mostrarMensaje(id) {
             mensajeActual = id;
+            // Opción: Si el mensaje no requiere "Hola", desactivar el botón.
+            if (id === 'sinRespuesta') {
+                incluirHola = false;
+                document.getElementById('holaBtn').classList.remove('active');
+            }
             actualizarMensajeActual();
         }
+        
+        // Función para alternar el estado del botón "Hola"
+        function toggleHola() {
+            incluirHola = !incluirHola; 
+            const holaBtn = document.getElementById('holaBtn');
+            
+            if (incluirHola) {
+                holaBtn.classList.add('active');
+            } else {
+                holaBtn.classList.remove('active');
+            }
+            
+            if (mensajeActual) {
+                actualizarMensajeActual();
+            }
+        }
 
-        // Inserta el nombre del cliente en el mensaje
+        // NUEVA FUNCIÓN: Alterna el estado del botón "Dame un momento por favor"
+        function toggleDameMomento() {
+            incluirDameMomento = !incluirDameMomento;
+            const btn = document.getElementById('dameMomentoBtn');
+            
+            if (incluirDameMomento) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+            
+            if (mensajeActual) {
+                actualizarMensajeActual();
+            }
+        }
+
+        // NUEVA FUNCIÓN: Alterna el estado del botón "¿Cómo puedo ayudarte?"
+        function toggleComoAyudar() {
+            incluirComoAyudar = !incluirComoAyudar;
+            const btn = document.getElementById('comoAyudarBtn');
+            
+            if (incluirComoAyudar) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+            
+            if (mensajeActual) {
+                actualizarMensajeActual();
+            }
+        }
+
+
+        /**
+         * Inserta el nombre del cliente y los modificadores (Hola, Dame un momento, ¿Cómo puedo ayudarte?) 
+         * al mensaje base.
+         */
         function personalizarMensaje(mensaje) {
             const nombre = document.getElementById("userInput").value.trim();
+            
+            // 1. Capitaliza la primera letra del mensaje base.
+            let mensajeFinal = mensaje.charAt(0).toUpperCase() + mensaje.slice(1);
+            
+            const esMensajeExcluidoDeHola = mensaje.startsWith("Esperamos"); // Solo sinRespuesta
+            
+            // 2. Si hay nombre, lo antepone.
             if (nombre) {
-                // Mensajes que no deben llevar "Hola" (ej: sinRespuesta)
-                if (mensaje.startsWith("Esperamos")) {
-                    return `${nombre}, ${mensaje}`;
+                mensajeFinal = `${nombre}, ${mensajeFinal}`;
+            }
+            
+            // 3. Si el botón "Hola" está activo Y el mensaje no está excluido, añade "Hola" al inicio.
+            if (incluirHola && !esMensajeExcluidoDeHola) {
+                if (nombre) {
+                    // Si tiene nombre: 'Juan, Buenos días...' -> 'Hola Juan, Buenos días...'
+                    mensajeFinal = mensajeFinal.replace(`${nombre}, `, `Hola ${nombre}, `);
                 } else {
-                    // La primera letra de "buenos", "buenas", etc. debería ir en mayúscula
-                    const mensajeCapitalizado = mensaje.charAt(0).toUpperCase() + mensaje.slice(1);
-                    return `Hola ${nombre}, ${mensajeCapitalizado}`;
+                    // Si no tiene nombre: 'Buenos días...' -> 'Hola, Buenos días...'
+                    mensajeFinal = `Hola, ${mensajeFinal}`;
                 }
             }
-            return mensaje.charAt(0).toUpperCase() + mensaje.slice(1); // Capitalizar si no hay nombre
+            
+            // 4. Agrega los mensajes de modificador al final (Separados por un punto y espacio)
+            let suffix = "";
+            
+            if (incluirDameMomento) {
+                 // Nota: Uso 'dame un momento por favor' y quito la capitalización ya que va como sufijo
+                suffix += " Dame un momento por favor."; 
+            }
+
+            if (incluirComoAyudar) {
+                // Nota: Capitalizo la pregunta si no va precedida por otro texto
+                // Si ya agregué "Dame un momento", no capitalizo el inicio.
+                let pregunta = "¿Cómo puedo ayudarte?";
+                if (suffix.length > 0) {
+                    pregunta = "¿cómo puedo ayudarte?";
+                }
+                suffix += ` ${pregunta}`;
+            }
+
+            if (suffix.length > 0) {
+                // Asegurarse de que el mensaje final termine con un punto para evitar dos puntos seguidos,
+                // luego agregar el sufijo.
+                if (!mensajeFinal.trim().endsWith('.') && !mensajeFinal.trim().endsWith('!') && !mensajeFinal.trim().endsWith('?')) {
+                    mensajeFinal += ".";
+                }
+                mensajeFinal += suffix;
+            }
+
+            return mensajeFinal;
         }
 
         // Actualiza el contenido del mensaje mostrado
@@ -364,8 +492,7 @@
         // Función para copiar texto genérica
         function copiarTexto(elementId) {
             const box = document.getElementById(elementId);
-            if (!box.value) {
-                // Si no hay texto, no copiamos ni mostramos notificación.
+            if (!box.value || box.value.includes('Ingresa los datos del cliente')) {
                 return;
             }
             box.select();
@@ -460,6 +587,7 @@
              // Por defecto, selecciona Yeison al cargar
              seleccionarAgente('yeison');
              document.getElementById('agendamientoOutput').value = 'Ingresa los datos del cliente.';
+             document.getElementById("messageBox").value = 'Selecciona un mensaje arriba...';
         });
     </script>
 </body>
