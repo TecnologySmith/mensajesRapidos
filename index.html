@@ -278,6 +278,7 @@
                 <button id="holaBtn" class="modifier-btn" onclick="toggleHola()">Hola (Inicio)</button>
                 <button id="dameMomentoBtn" class="modifier-btn" onclick="toggleDameMomento()">Dame un momento</button>
                 <button id="comoAyudarBtn" class="modifier-btn" onclick="toggleComoAyudar()">¿Cómo puedo ayudar?</button>
+                <button id="conMuchoGustoBtn" class="modifier-btn" onclick="toggleConMuchoGusto()">Con mucho gusto</button>
             </div>
 
             <div class="top-buttons">
@@ -307,7 +308,14 @@
             </div>
         </div>
 
-        <div class="main-column agendamientos">
+       <div class="main-column agendamientos">
+    <div class="section-title">Confirmación de Reunión</div>
+
+    <textarea id="confirmacionOutput" readonly style="height: 200px;"></textarea>
+
+    <button id="copyConfirmacionBtn" onclick="copiarTexto('confirmacionOutput')">Copiar Confirmación</button>
+</div>
+            
             <div class="section-title">Agendamientos y Enlaces</div>
 
             <div class="agent-input-box">
@@ -322,6 +330,7 @@
             
             <div class="agent-times" id="agentTimes">
                 </div>
+            <input type="date" id="fechaAgendamiento" onchange="actualizarAgendamiento()" style="margin-top:10px; padding:10px; border-radius:8px; border:1px solid #00c3ff; background:#1e1e1e; color:white;">
 
             <textarea id="agendamientoOutput" readonly placeholder="El mensaje de agendamiento aparecerá aquí..."></textarea>
             
@@ -354,6 +363,7 @@
         let incluirHola = false; // Estado para el botón "Hola"
         let incluirDameMomento = false; // Nuevo estado para "Dame un momento por favor"
         let incluirComoAyudar = false; // Nuevo estado para "¿Cómo puedo ayudarte?"
+        let incluirConMuchoGusto = false: // nuevo estado para "con mucho gusto 
 
         // Muestra el mensaje seleccionado
         function mostrarMensaje(id) {
@@ -405,10 +415,29 @@
             
             if (incluirComoAyudar) {
                 btn.classList.add('active');
-            } else {
+            }
+            if (incluirConMuchoGusto) {
+                suffix += "Con Mucho gusto. );
+            }
+            else {
                 btn.classList.remove('active');
             }
             
+            if (mensajeActual) {
+                actualizarMensajeActual();
+            }
+        }
+
+        function tooggleConMuchoGusto() {
+            incluirConMuchoGusto = !incluirConMuchoGusto;
+            const btn = document.getElementById('conMuchoGustoBtn');
+
+            if (incluirConMuchoGusto) {
+                btn.classLizt.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+
             if (mensajeActual) {
                 actualizarMensajeActual();
             }
@@ -500,6 +529,41 @@
             mostrarNotificacionCopiado(); // Llama a la nueva función de notificación
         }
 
+        function formatearFecha(fecha, hora) {
+            if (!fecha) return "";
+
+            const dias = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes" "Sabado"];
+            const meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Novimebre","Diciembre"];
+
+            const f = nre Date(fecha);
+
+            const diaSemana = dias(f.getDate()).padStart(2, '0');
+        }
+
+        function actualizarConfirmacion() {
+    const fecha = document.getElementById('fechaAgendamiento').value;
+
+    let horaTexto = "";
+    const btnActivo = document.querySelector('.agent-times .time-btn.active');
+    if (btnActivo) {
+        horaTexto = btnActivo.textContent;
+    }
+
+    const fechaFormateada = formatearFecha(fecha, horaTexto);
+
+    const mensaje = `Te confirmo que ya hemos agendado tu reunión.
+El día de la sesión te estaremos esperando en sala durante un máximo de 15 minutos ⏳.
+Por favor recuerda ingresar puntualmente para que podamos aprovechar al máximo el espacio juntos 🙌.
+
+Te comparto el link de acceso: ${linkSeleccionado}
+
+${fechaFormateada}`;
+
+    document.getElementById('confirmacionOutput').value = mensaje;
+}
+
+            
+
         /* =======================================================
          * SECCIÓN DE AGENDAMIENTOS
          * ======================================================= */
@@ -516,6 +580,8 @@
                 '4pm': 'https://us06web.zoom.us/j/81938853734'
             }
         };
+
+        
 
         let agenteSeleccionado = '';
         let linkSeleccionado = '';
@@ -551,6 +617,7 @@
             }
             
             actualizarAgendamiento();
+            actualizarConfirmacion();
         }
 
         // Guarda el link de la hora seleccionada y resalta el botón
@@ -569,18 +636,28 @@
 
         // Construye el mensaje final de agendamiento
         function actualizarAgendamiento() {
-            const datosCliente = document.getElementById('clienteData').value.trim();
-            const outputBox = document.getElementById('agendamientoOutput');
+    const datosCliente = document.getElementById('clienteData').value.trim();
+    const fecha = document.getElementById('fechaAgendamiento').value;
+    const outputBox = document.getElementById('agendamientoOutput');
 
-            // Lógica para actualizar el mensaje
-            if (datosCliente && linkSeleccionado) {
-                outputBox.value = `${datosCliente} - únete a la reunión aquí: ${linkSeleccionado}`;
-            } else if (datosCliente && !linkSeleccionado && agenteSeleccionado) {
-                outputBox.value = `Selecciona una hora para generar el enlace.`;
-            } else {
-                outputBox.value = 'Ingresa los datos del cliente y selecciona un agente y una hora.';
-            }
-        }
+    let horaTexto = "";
+
+    // Obtener texto del botón activo
+    const btnActivo = document.querySelector('.agent-times .time-btn.active');
+    if (btnActivo) {
+        horaTexto = btnActivo.textContent;
+    }
+
+    const fechaFormateada = formatearFecha(fecha, horaTexto);
+
+    if (datosCliente && linkSeleccionado && fecha) {
+        outputBox.value = `${datosCliente} - únete a la reunión aquí: ${linkSeleccionado}\n${fechaFormateada}`;
+    } else if (datosCliente && agenteSeleccionado) {
+        outputBox.value = `Selecciona hora y fecha para generar el enlace.`;
+    } else {
+        outputBox.value = 'Ingresa los datos del cliente.';
+    }
+}
         
         // Inicializar
         document.addEventListener('DOMContentLoaded', () => {
