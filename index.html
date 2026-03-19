@@ -1,168 +1,145 @@
+<!-- SOLO TE MUESTRO LAS PARTES NUEVAS + SCRIPT COMPLETO -->
+<!-- REEMPLAZA TODO TU HTML POR ESTE -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Soporte Lizto Software</title>
 
 <style>
-body {margin:0;font-family:Arial;background:#121212;color:white;}
-.main-container {display:flex;gap:20px;padding:20px;}
-.main-column {flex:1;background:#1e1e1e;padding:15px;border-radius:10px;}
-.modifier-btn,.msg-btn,.agent-btn {
-padding:10px;border-radius:8px;border:none;cursor:pointer;
+/* SOLO AGREGADO */
+.extra-box{
+    margin-top:10px;
 }
-.modifier-btn.active {background:#00c3ff;color:black;}
-textarea,input {width:100%;margin-top:10px;padding:10px;background:#1e1e1e;color:white;border:1px solid #00c3ff;border-radius:8px;}
 </style>
+
 </head>
 
 <body>
 
-<div class="main-container">
+<!-- ================= BOTONES MODIFICADORES ================= -->
+<div class="modifier-buttons-container">
+    <button id="holaBtn" class="modifier-btn" onclick="toggleHola()">Hola (Inicio)</button>
+    <button id="dameMomentoBtn" class="modifier-btn" onclick="toggleDameMomento()">Dame un momento</button>
+    <button id="comoAyudarBtn" class="modifier-btn" onclick="toggleComoAyudar()">¿Cómo puedo ayudar?</button>
 
-<!-- MENSAJES -->
-<div class="main-column">
-<h3>Mensajes</h3>
-
-<div>
-<button class="modifier-btn" onclick="toggleHola()">Hola</button>
-<button class="modifier-btn" onclick="toggleDameMomento()">Dame un momento</button>
-<button class="modifier-btn" onclick="toggleComoAyudar()">¿Cómo puedo ayudar?</button>
-<button class="modifier-btn" onclick="toggleConMuchoGusto()">Con mucho gusto</button>
+    <!-- NUEVO BOTÓN -->
+    <button id="gustoBtn" class="modifier-btn" onclick="toggleGusto()">Con mucho gusto</button>
 </div>
 
-<input id="userInput" placeholder="Nombre cliente">
+<!-- ================= AGREGADO EN AGENDAMIENTOS ================= -->
 
-<textarea id="messageBox"></textarea>
+<div class="agent-times" id="agentTimes"></div>
 
-</div>
-
-<!-- AGENDAMIENTO -->
-<div class="main-column">
-<h3>Agendamiento</h3>
-
-<input id="clienteData" placeholder="Nombre, teléfono">
-
-<div>
-<button onclick="seleccionarAgente('yeison')">Yeison</button>
-<button onclick="seleccionarAgente('paola')">Paola</button>
-</div>
-
-<div id="agentTimes"></div>
-
-<input type="date" id="fechaAgendamiento" onchange="actualizarAgendamiento()">
+<!-- NUEVO CALENDARIO -->
+<input type="date" id="fechaSeleccionada" onchange="actualizarAgendamiento()" style="margin-top:10px; padding:8px; border-radius:6px;">
 
 <textarea id="agendamientoOutput"></textarea>
 
-</div>
+<!-- NUEVO CUADRO -->
+<textarea id="confirmacionBox" class="extra-box" readonly placeholder="Mensaje de confirmación aquí..."></textarea>
 
-<!-- CONFIRMACION -->
-<div class="main-column">
-<h3>Confirmación</h3>
-
-<textarea id="confirmacionOutput"></textarea>
-
-</div>
-
-</div>
 
 <script>
 
-const horarios = {
-yeison:{
-'9 am':'link1',
-'12 pm':'link2'
-},
-paola:{
-'3 pm':'link3'
-}
-};
+/* ================= NUEVO ESTADO ================= */
+let incluirGusto = false;
+let fechaSeleccionada = "";
 
-let agenteSeleccionado="";
-let linkSeleccionado="";
+/* ================= BOTÓN NUEVO ================= */
+function toggleGusto(){
+    incluirGusto = !incluirGusto;
+    const btn = document.getElementById('gustoBtn');
 
-function seleccionarAgente(a){
-agenteSeleccionado=a;
-const cont=document.getElementById("agentTimes");
-cont.innerHTML="";
+    btn.classList.toggle('active');
 
-for(let h in horarios[a]){
-let b=document.createElement("button");
-b.textContent=h;
-b.onclick=()=>seleccionarHora(horarios[a][h],b);
-cont.appendChild(b);
-}
+    if(mensajeActual){
+        actualizarMensajeActual();
+    }
 }
 
-function seleccionarHora(link,btn){
-linkSeleccionado=link;
-document.querySelectorAll("#agentTimes button").forEach(b=>b.classList.remove("active"));
-btn.classList.add("active");
-actualizarAgendamiento();
+/* ================= MODIFICAR PERSONALIZAR ================= */
+function personalizarMensaje(mensaje){
+
+    let mensajeFinal = mensaje.charAt(0).toUpperCase() + mensaje.slice(1);
+
+    if(incluirHola){
+        mensajeFinal = "Hola, " + mensajeFinal;
+    }
+
+    if(incluirGusto){
+        mensajeFinal += " Con mucho gusto.";
+    }
+
+    if(incluirDameMomento){
+        mensajeFinal += " Dame un momento por favor.";
+    }
+
+    if(incluirComoAyudar){
+        mensajeFinal += " ¿Cómo puedo ayudarte?";
+    }
+
+    return mensajeFinal;
 }
 
-function formatearFecha(fecha,hora){
-if(!fecha)return "";
+/* ================= FORMATEAR FECHA ================= */
+function formatearFecha(fecha, hora){
 
-const dias=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
-const meses=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+    if(!fecha || !hora) return "";
 
-const f=new Date(fecha);
+    const dias = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+    const meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
 
-return `${dias[f.getDay()]} ${String(f.getDate()).padStart(2,'0')} de ${meses[f.getMonth()]} a las ${hora}`;
+    let f = new Date(fecha + "T00:00:00");
+
+    let diaSemana = dias[f.getDay()];
+    let dia = String(f.getDate()).padStart(2,'0');
+    let mes = meses[f.getMonth()];
+
+    return `${diaSemana} ${dia} de ${mes} a las ${hora}`;
 }
 
+/* ================= MODIFICAR AGENDAMIENTO ================= */
 function actualizarAgendamiento(){
-const datos=document.getElementById("clienteData").value;
-const fecha=document.getElementById("fechaAgendamiento").value;
 
-let hora="";
-const btn=document.querySelector("#agentTimes .active");
-if(btn)hora=btn.textContent;
+    const datos = document.getElementById('clienteData').value;
+    const fecha = document.getElementById('fechaSeleccionada').value;
+    const output = document.getElementById('agendamientoOutput');
+    const confirmacion = document.getElementById('confirmacionBox');
 
-const fechaFinal=formatearFecha(fecha,hora);
+    if(datos && linkSeleccionado){
 
-if(datos && linkSeleccionado && fecha){
-document.getElementById("agendamientoOutput").value =
-`${datos} - ${linkSeleccionado}\n${fechaFinal}`;
-}else{
-document.getElementById("agendamientoOutput").value="Completa datos";
-}
+        output.value = `${datos} - únete a la reunión aquí: ${linkSeleccionado}`;
 
-actualizarConfirmacion();
-}
+        let fechaTexto = formatearFecha(fecha, horaSeleccionada);
 
-function actualizarConfirmacion(){
-const fecha=document.getElementById("fechaAgendamiento").value;
-
-let hora="";
-const btn=document.querySelector("#agentTimes .active");
-if(btn)hora=btn.textContent;
-
-const fechaFinal=formatearFecha(fecha,hora);
-
-document.getElementById("confirmacionOutput").value =
+        confirmacion.value =
 `Te confirmo que ya hemos agendado tu reunión.
+
 El día de la sesión te estaremos esperando en sala durante un máximo de 15 minutos ⏳.
-Por favor recuerda ingresar puntualmente para aprovechar al máximo el espacio 🙌.
+Por favor recuerda ingresar puntualmente para que podamos aprovechar al máximo el espacio juntos 🙌.
 
 Te comparto el link de acceso: ${linkSeleccionado}
 
-${fechaFinal}`;
+${fechaTexto}`;
+    }
 }
 
-/* BOTONES */
+/* ================= GUARDAR HORA ================= */
+let horaSeleccionada = "";
 
-let incluirHola=false;
-let incluirDameMomento=false;
-let incluirComoAyudar=false;
-let incluirConMuchoGusto=false;
+function seleccionarHora(link, btn){
 
-function toggleHola(){incluirHola=!incluirHola;}
-function toggleDameMomento(){incluirDameMomento=!incluirDameMomento;}
-function toggleComoAyudar(){incluirComoAyudar=!incluirComoAyudar;}
-function toggleConMuchoGusto(){incluirConMuchoGusto=!incluirConMuchoGusto;}
+    linkSeleccionado = link;
+    horaSeleccionada = btn.textContent;
+
+    document.querySelectorAll('.time-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+
+    actualizarAgendamiento();
+}
 
 </script>
 
