@@ -422,9 +422,10 @@
             }
             
             let suffix = "";
+            if (modifiers.gusto) suffix += (suffix ? " con" : " Con") + " mucho gusto.";
             if (modifiers.momento) suffix += " Dame un momento por favor.";
             if (modifiers.ayuda) suffix += (suffix ? " ¿cómo" : " ¿Cómo") + " puedo ayudarte?";
-            if (modifiers.gusto) suffix += (suffix ? " con" : " Con") + " mucho gusto.";
+            
 
             if (suffix.length > 0) {
                 if (!mensajeFinal.trim().endsWith('.') && !mensajeFinal.trim().endsWith('!') && !mensajeFinal.trim().endsWith('?')) {
