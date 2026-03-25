@@ -116,9 +116,9 @@
         .modifier-btn {
             font-size: 1.1em;
             padding: 10px 15px;
-            background-color: #00c3ff;
-            color: #121212;
-            border-color: #00a8e1;
+            background-color: #2a2a2a; /* Cambio para que no se vea activo por defecto */
+            color: #f1f1f1;
+            border-color: #3a3a3a;
             font-weight: bold;
         }
 
@@ -128,12 +128,13 @@
             transform: translateY(-2px);
         }
 
+        /* Indicador de botón ACTIVO */
         .agent-btn.active, .time-btn.active, .modifier-btn.active {
-            background-color: #00c3ff;
-            color: #121212;
-            border-color: #00a8e1;
+            background-color: #00c3ff !important;
+            color: #121212 !important;
+            border-color: #00a8e1 !important;
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 195, 255, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 195, 255, 0.5);
         }
 
         @media (min-width: 768px) {
@@ -323,7 +324,6 @@
             <div class="section-title">Agendamientos y Enlaces</div>
 
             <div class="agendamiento-layout">
-                <!-- Columna 1: Selección -->
                 <div class="agendamiento-subcol">
                     <div class="agent-input-box">
                         <label for="clienteData">Datos del Cliente (Nombre, Teléfono)</label>
@@ -346,7 +346,6 @@
                     <button id="copyAgentBtn" onclick="copiarTexto('agendamientoOutput')">Copiar Agendamiento</button>
                 </div>
 
-                <!-- Columna 2: Confirmación Detallada -->
                 <div class="agendamiento-subcol">
                     <label>Mensaje de Confirmación Detallada:</label>
                     <textarea id="confirmacionOutput" readonly placeholder="Selecciona fecha, hora y datos para generar la confirmación..."></textarea>
@@ -361,12 +360,12 @@
          * SECCIÓN DE MENSAJES RÁPIDOS
          * ======================================================= */
         const mensajes = {
-            repcontingencia: "¿cómo estás? Hablas con Yeison del equipo de soporte de Lizto, me asignaron tu caso para poderte ayudar",
-            daysMessage: "buenos días, ¿cómo estás? Hablas con Yeison del equipo de soporte de Lizto. ",
-            afternoonMessage: "buenas tardes, ¿cómo estás? Hablas con Yeison del equipo de soporte de Lizto. ",
-            pagoRealizadoMessage: "¿cómo estás? Hablas con Yeison del equipo de soporte de Lizto. Mil gracias por el pago. Ya puedes ingresar.",
+            repcontingencia: "¿cómo estás? Hablas con Yeison Hernandez del equipo de soporte de Lizto, me asignaron tu caso para poderte ayudar",
+            daysMessage: "buenos días, ¿cómo estás? Hablas con Yeison Hernandez del equipo de soporte de Lizto. ",
+            afternoonMessage: "buenas tardes, ¿cómo estás? Hablas con Yeison Hernandez del equipo de soporte de Lizto. ",
+            pagoRealizadoMessage: "¿cómo estás? Hablas con Yeison Hernandez del equipo de soporte de Lizto. Mil gracias por el pago. Ya puedes ingresar.",
             pagoGraciasMessage: "con mucho gusto, indícame el NIT del salón para solicitarlo al área contable.",
-            solicitarLinkMessage: "¿cómo estás? Hablas con Yeison del equipo de soporte de Lizto. Mil disculpas, el sistema entró en suspensión automática al no detectar el pago. ¿Me puedes enviar el soporte de pago y el NIT para verificarlo con contabilidad?",
+            solicitarLinkMessage: "¿cómo estás? Hablas con Yeison Hernandez del equipo de soporte de Lizto. Mil disculpas, el sistema entró en suspensión automática al no detectar el pago. ¿Me puedes enviar el soporte de pago y el NIT para verificarlo con contabilidad?",
             despedidaMessage: "ha sido un gusto ayudarte. Si necesitas más ayuda, no dudes en contactarnos. ¡Te deseo un excelente día!",
             linkReunionMessage: "al correo te acabamos de enviar el link de la reunión. ¿Me confirmas por favor si te llegó?",
             sinRespuesta: "Esperamos que la solución brindada haya resuelto tu caso. Cuando tengas un momento, ¿podrías confirmarnos si todo está en orden? Al no tener respuesta, procederemos a cerrar el ticket, pero si tienes otra consulta estaremos atentos para ayudarte.",
@@ -390,7 +389,9 @@
                           type === 'momento' ? 'dameMomentoBtn' : 
                           type === 'ayuda' ? 'comoAyudarBtn' : 'conGustoBtn';
             
+            // Aquí se gestiona el indicador visual del botón activo
             document.getElementById(btnId).classList.toggle('active', modifiers[type]);
+            
             if (mensajeActual) actualizarMensajeActual();
         }
 
@@ -500,7 +501,6 @@
             const fecha = new Date(fechaStr + 'T00:00:00');
             const opciones = { weekday: 'long', day: '2-digit', month: 'long' };
             let formateada = fecha.toLocaleDateString('es-ES', opciones);
-            // Capitalizar la primera letra del día
             return formateada.charAt(0).toUpperCase() + formateada.slice(1);
         }
 
@@ -512,14 +512,12 @@
 
             const fechaTexto = formatFecha(fechaInput);
 
-            // Mensaje Simple
             if (datosCliente && linkSeleccionado) {
                 outputBox.value = `${datosCliente} - únete a la reunión aquí: ${linkSeleccionado}`;
             } else {
                 outputBox.value = 'Ingresa los datos del cliente y selecciona un agente y una hora.';
             }
 
-            // Mensaje de Confirmación Detallada
             if (linkSeleccionado && horaSeleccionada && fechaInput) {
                 confirmBox.value = `Te confirmo que ya hemos agendado tu reunión.
 El día de la sesión te estaremos esperando en sala durante un máximo de 15 minutos ⏳.
