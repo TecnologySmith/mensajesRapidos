@@ -55,7 +55,8 @@ const mensajes = {
   linkPago: "puedes realizar el pago en este link:",
   reunionDudas: "Horarios martes y jueves  9am en clase grupal https://us06web.zoom.us/j/83345602567 martes y jueves  5pm https://us06web.zoom.us/j/83272928783?pwd=5oyn4FfSuZ7F5gPDakoUUqVqhTmKbT.1 ",
   dameunMomento: "dame un momento por favor, vamos a verificar.",
-  algoMas: "con mucho gusto, ¿hay algo más en lo que te podamos colaborar?"
+  algoMas: "con mucho gusto, ¿hay algo más en lo que te podamos colaborar?",
+   seSoluciono: "Me confirmas por favor: ¿la solución que te brindamos resolvió lo que necesitabas? Si todo quedó bien, o si algo sigue pendiente, cuéntanos para seguir ayudándote. 🙌?"
 };
 
 let mensajeActual = "";
