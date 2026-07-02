@@ -128,6 +128,60 @@
             transform: translateY(-2px);
         }
 
+        /* ── NAVBAR ── */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(14,17,23,0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.3s;
+}
+.navbar.scrolled { background: rgba(14,17,23,0.97); }
+
+.nav-inner {
+  max-width: 1200px; margin: 0 auto;
+  padding: 0 1.5rem;
+  height: 68px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.nav-logo {
+  display: flex; align-items: center; gap: 0.6rem;
+  text-decoration: none; color: var(--text);
+  font-family: var(--font-head); font-size: 1.15rem; font-weight: 700;
+}
+.logo-img { width: 32px; height: 32px; object-fit: contain; border-radius: 6px; }
+
+.nav-links {
+  display: flex; align-items: center; gap: 0.25rem;
+  list-style: none;
+}
+.nav-links li a {
+  color: var(--muted); text-decoration: none;
+  font-size: 0.875rem; font-weight: 500;
+  padding: 0.45rem 0.9rem; border-radius: 8px;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-links li a:hover { color: var(--text); background: var(--surface2); }
+
+.nav-cta {
+  background: var(--accent) !important;
+  color: #0e1117 !important;
+  font-weight: 700 !important;
+}
+.nav-cta:hover { background: #00c988 !important; }
+
+.hamburger {
+  display: none;
+  flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 4px;
+}
+.hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--text); border-radius: 2px;
+  transition: transform 0.3s, opacity 0.3s;
+}
+
         /* Indicador de botón ACTIVO */
         .agent-btn.active, .time-btn.active, .modifier-btn.active {
             background-color: #00c3ff !important;
