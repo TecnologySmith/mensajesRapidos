@@ -1,608 +1,220 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Soporte Lizto Software</title>
-    <link rel="icon" type="image/png" href="https://i.ibb.co/M5QnCZR1/images.jpg">
-
-    <style>
-        /* === ESTILOS GENERALES === */
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: #121212; /* Fondo oscuro */
-            color: #f1f1f1;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* === ENCABEZADO === */
-        header {
-            text-align: center;
-            padding: 20px;
-            background-color: #1c1c1c;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-        }
-
-        header h1 {
-            color: #00c3ff;
-            margin: 0;
-            text-shadow: 0 0 8px rgba(0, 195, 255, 0.4);
-        }
-
-        /* === CONTENEDOR PRINCIPAL - DIVIDE EN 2 COLUMNAS === */
-        .main-container {
-            display: flex;
-            flex: 1;
-            padding: 20px;
-            gap: 20px;
-        }
-
-        .main-column {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            padding: 15px;
-            background-color: #1e1e1e;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Ajuste de columnas */
-        .mensajes-rapidos {
-            flex: 1.2;
-        }
-        .agendamientos {
-            flex: 1.8;
-        }
-
-        /* Sub-layout para agendamientos */
-        .agendamiento-layout {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        .agendamiento-subcol {
-            flex: 1;
-            min-width: 300px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        /* === TÍTULOS DE SECCIÓN === */
-        .section-title {
-            color: #00c3ff;
-            border-bottom: 2px solid #00c3ff;
-            padding-bottom: 5px;
-            margin-bottom: 15px;
-            font-size: 1.2em;
-        }
-
-        /* === BOTONES GENERALES === */
-        .top-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            padding: 10px;
-            border-radius: 10px;
-        }
-        
-        /* Contenedor para los botones de Saludo/Modificadores */
-        .modifier-buttons-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .msg-btn, .agent-btn, .modifier-btn {
-            padding: 10px 14px;
-            background-color: #2a2a2a;
-            border: 1px solid #3a3a3a;
-            color: #f1f1f1;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 14px;
-            flex-grow: 0;
-        }
-        
-        /* Estilo para los botones Modificadores */
-        .modifier-btn {
-            font-size: 1.1em;
-            padding: 10px 15px;
-            background-color: #2a2a2a; /* Cambio para que no se vea activo por defecto */
-            color: #f1f1f1;
-            border-color: #3a3a3a;
-            font-weight: bold;
-        }
-
-        .msg-btn:hover:not(.active), .agent-btn:hover:not(.active), .modifier-btn:hover:not(.active) {
-            background-color: #00c3ff;
-            color: #121212;
-            transform: translateY(-2px);
-        }
-
-        /* ── NAVBAR ── */
-.navbar {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  background: rgba(14,17,23,0.85);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-  transition: background 0.3s;
-}
-.navbar.scrolled { background: rgba(14,17,23,0.97); }
-
-.nav-inner {
-  max-width: 1200px; margin: 0 auto;
-  padding: 0 1.5rem;
-  height: 68px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-
-.nav-logo {
-  display: flex; align-items: center; gap: 0.6rem;
-  text-decoration: none; color: var(--text);
-  font-family: var(--font-head); font-size: 1.15rem; font-weight: 700;
-}
-.logo-img { width: 32px; height: 32px; object-fit: contain; border-radius: 6px; }
-
-.nav-links {
-  display: flex; align-items: center; gap: 0.25rem;
-  list-style: none;
-}
-.nav-links li a {
-  color: var(--muted); text-decoration: none;
-  font-size: 0.875rem; font-weight: 500;
-  padding: 0.45rem 0.9rem; border-radius: 8px;
-  transition: color 0.2s, background 0.2s;
-}
-.nav-links li a:hover { color: var(--text); background: var(--surface2); }
-
-.nav-cta {
-  background: var(--accent) !important;
-  color: #0e1117 !important;
-  font-weight: 700 !important;
-}
-.nav-cta:hover { background: #00c988 !important; }
-
-.hamburger {
-  display: none;
-  flex-direction: column; gap: 5px;
-  background: none; border: none; cursor: pointer; padding: 4px;
-}
-.hamburger span {
-  display: block; width: 22px; height: 2px;
-  background: var(--text); border-radius: 2px;
-  transition: transform 0.3s, opacity 0.3s;
-}
-
-        /* Indicador de botón ACTIVO */
-        .agent-btn.active, .time-btn.active, .modifier-btn.active {
-            background-color: #00c3ff !important;
-            color: #121212 !important;
-            border-color: #00a8e1 !important;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 195, 255, 0.5);
-        }
-
-        @media (min-width: 768px) {
-            .modifier-buttons-container {
-                justify-content: space-evenly;
-            }
-        }
-        
-        .input-box, .agent-input-box {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        #userInput, #clienteData, #agendamientoOutput, #confirmacionOutput, #fechaAgendamiento {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #00c3ff;
-            border-radius: 8px;
-            background-color: #1e1e1e;
-            color: #f1f1f1;
-            outline: none;
-            box-sizing: border-box;
-        }
-
-        #fechaAgendamiento {
-            color-scheme: dark;
-            cursor: pointer;
-        }
-
-        #userInput:focus, #clienteData:focus {
-            box-shadow: 0 0 8px rgba(0, 195, 255, 0.6);
-        }
-
-        .message-area {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            flex-grow: 1;
-        }
-
-        #messageBox {
-            width: 100%;
-            height: 300px;
-            background-color: #1c1c1c;
-            border: 1px solid #333;
-            border-radius: 10px;
-            padding: 15px;
-            color: #eaeaea;
-            resize: none;
-            font-size: 15px;
-            line-height: 1.5;
-            outline: none;
-            flex-grow: 1;
-        }
-
-        .agendamiento-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .agent-times {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            min-height: 45px;
-            margin-bottom: 10px;
-        }
-
-        #copyBtn, #copyAgentBtn, #copyConfirmBtn {
-            padding: 10px 20px;
-            background-color: #00c3ff;
-            color: #121212;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.2s;
-            height: 45px;
-            align-self: center;
-        }
-
-        #copyAgentBtn, #copyConfirmBtn {
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        #copyBtn:hover, #copyAgentBtn:hover, #copyConfirmBtn:hover {
-            background-color: #00a8e1;
-        }
-        
-        #agendamientoOutput, #confirmacionOutput {
-            height: 150px;
-            margin-top: 10px;
-            resize: none;
-        }
-
-        #copy-notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #4CAF50; /* Verde */
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: bold;
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: 1000;
-        }
-
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #00c3ff;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1e1e1e;
-        }
-
-        @media (max-width: 992px) {
-            .main-container {
-                flex-direction: column;
-            }
-        }
-        @media (max-width: 768px) {
-            .message-area {
-                flex-direction: column;
-            }
-            #copyBtn {
-                width: 100%;
-            }
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Herramientas Líder de Soporte · Lizto Software</title>
+<link rel="icon" type="image/png" href="https://i.ibb.co/M5QnCZR1/images.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
 
-     <!-- NAVBAR -->
-  <nav class="navbar" id="navbar">
-  
-      <button class="hamburger" id="hamburger" aria-label="Menú">
-        <span></span><span></span><span></span>
-      </button>
-      <ul class="nav-links" id="nav-links">
-        <li><a href="https://tecnologysmith.github.io/Dividir_archivo/" target="_blank">🛒 Dividir</a></li>
+<div id="copy-notification">Copiado ✅</div>
 
-      </ul>
-    </div>
-  </nav>
-
-    <div id="copy-notification">Copiado ✅</div>
-
-    <header>
-        <h1>Lider de Soporte y Atención al Cliente Lizto Software</h1>
-    </header>
-
-    
-
-    <div class="main-container">
-
-        <div class="main-column mensajes-rapidos">
-            <div class="section-title">Mensajes de Soporte</div>
-            
-            <div class="modifier-buttons-container">
-                <button id="holaBtn" class="modifier-btn" onclick="toggleModifier('hola')">Hola (Inicio)</button>
-                <button id="dameMomentoBtn" class="modifier-btn" onclick="toggleModifier('momento')">Dame un momento</button>
-                <button id="comoAyudarBtn" class="modifier-btn" onclick="toggleModifier('ayuda')">¿Cómo puedo ayudar?</button>
-                <button id="conGustoBtn" class="modifier-btn" onclick="toggleModifier('gusto')">Con mucho gusto</button>
-            </div>
-
-            <div class="top-buttons">
-                <button class="msg-btn" onclick="mostrarMensaje('repcontingencia')">Caso asignado</button>
-                <button class="msg-btn" onclick="mostrarMensaje('daysMessage')">Saludo Días</button>
-                <button class="msg-btn" onclick="mostrarMensaje('afternoonMessage')">Saludo Tardes</button>
-                <button class="msg-btn" onclick="mostrarMensaje('pagoRealizadoMessage')">Confirmación de Pago</button>
-                <button class="msg-btn" onclick="mostrarMensaje('pagoGraciasMessage')">Agradecimiento Pago</button>
-                <button class="msg-btn" onclick="mostrarMensaje('solicitarLinkMessage')">Solicitud Soporte Pago</button>
-                <button class="msg-btn" onclick="mostrarMensaje('despedidaMessage')">Despedida</button>
-                <button class="msg-btn" onclick="mostrarMensaje('linkReunionMessage')">Enlace Reunión</button>
-                <button class="msg-btn" onclick="mostrarMensaje('sinRespuesta')">Sin Respuesta</button>
-                <button class="msg-btn" onclick="mostrarMensaje('linkPago')">Link de Pago</button>
-                <button class="msg-btn" onclick="mostrarMensaje('reunionDudas')">Reunión de dudas</button>
-                <button class="msg-btn" onclick="mostrarMensaje('dameunMomento')">Dame un Momento</button>
-                <button class="msg-btn" onclick="mostrarMensaje('algoMas')">¿Algo Más?</button>
-            </div>
-
-            <div class="input-box">
-                <label for="userInput">Nombre del Cliente (Para Saludo)</label>
-                <input type="text" id="userInput" placeholder="Ej: Juan Pérez" oninput="actualizarMensajeActual()" />
-            </div>
-
-            <div class="message-area">
-                <textarea id="messageBox" readonly placeholder="Selecciona un mensaje arriba..."></textarea>
-                <button id="copyBtn" onclick="copiarTexto('messageBox')">Copiar</button>
-            </div>
-        </div>
-
-        <div class="main-column agendamientos">
-            <div class="section-title">Agendamientos y Enlaces</div>
-
-            <div class="agendamiento-layout">
-                <div class="agendamiento-subcol">
-                    <div class="agent-input-box">
-                        <label for="clienteData">Datos del Cliente (Nombre, Teléfono)</label>
-                        <input type="text" id="clienteData" placeholder="Ej: Lola, 3108765646" oninput="actualizarAgendamiento()" />
-                    </div>
-
-                    <div class="agendamiento-buttons">
-                        <button class="agent-btn" id="btnYeison" onclick="seleccionarAgente('yeison')">Yeison</button>
-                        <button class="agent-btn" id="btnPaola" onclick="seleccionarAgente('paola')">Paola</button>
-                    </div>
-                    
-                    <div class="agent-times" id="agentTimes"></div>
-
-                    <div class="input-box">
-                        <label for="fechaAgendamiento">Fecha de la Reunión</label>
-                        <input type="date" id="fechaAgendamiento" onchange="actualizarAgendamiento()">
-                    </div>
-
-                    <textarea id="agendamientoOutput" readonly placeholder="El mensaje de agendamiento aparecerá aquí..."></textarea>
-                    <button id="copyAgentBtn" onclick="copiarTexto('agendamientoOutput')">Copiar Agendamiento</button>
-                </div>
-
-                <div class="agendamiento-subcol">
-                    <label>Mensaje de Confirmación Detallada:</label>
-                    <textarea id="confirmacionOutput" readonly placeholder="Selecciona fecha, hora y datos para generar la confirmación..."></textarea>
-                    <button id="copyConfirmBtn" onclick="copiarTexto('confirmacionOutput')">Copiar Confirmación</button>
-                </div>
-            </div>
-        </div>
+<!-- ============ MENÚ PRINCIPAL ============ -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <span class="brand-mark">L</span>
+      <div class="brand-text">
+        <span class="brand-title">Herramientas</span>
+        <span class="brand-subtitle">Líder de Soporte · Lizto Software</span>
+      </div>
     </div>
 
-    <script>
-        /* =======================================================
-         * SECCIÓN DE MENSAJES RÁPIDOS
-         * ======================================================= */
-        const mensajes = {
-            repcontingencia: "¿Cómo estás? Hablas con Yeison Hernandez del equipo de soporte de Lizto Software, me asignaron tu caso para poderte ayudar",
-            daysMessage: "buenos días, ¿cómo estás? Hablas con Yeison Hernandez del equipo de soporte de Lizto Software. ",
-            afternoonMessage: "buenas tardes, ¿cómo estás? Hablas con Yeison Hernandez del equipo de soporte de Lizto Software. ",
-            pagoRealizadoMessage: "¿Cómo estás? Hablas con Yeison Hernandez del equipo de soporte de Lizto. Mil gracias por el pago. Ya puedes ingresar.",
-            pagoGraciasMessage: "con mucho gusto, indícame el NIT del salón para solicitarlo al área contable.",
-            solicitarLinkMessage: "¿Cómo estás? Hablas con Yeison Hernandez del equipo de soporte de Lizto. Mil disculpas, el sistema entró en suspensión automática al no detectar el pago. ¿Me puedes enviar el soporte de pago y el NIT para verificarlo con contabilidad?",
-            despedidaMessage: "ha sido un gusto ayudarte. Si necesitas más ayuda, no dudes en contactarnos. ¡Te deseo un excelente día!",
-            linkReunionMessage: "Al correo te acabamos de enviar el link de la reunión. ¿Me confirmas por favor si te llegó?",
-            sinRespuesta: "Esperamos que la solución brindada haya resuelto tu caso. Cuando tengas un momento, ¿podrías confirmarnos si todo está en orden? Al no tener respuesta, procederemos a cerrar el ticket, pero si tienes otra consulta estaremos atentos para ayudarte.",
-            linkPago: "puedes realizar el pago en este link:",
-            reunionDudas: "Horarios martes y jueves  9am en clase grupal https://us06web.zoom.us/j/83345602567 martes y jueves  5pm https://us06web.zoom.us/j/83272928783?pwd=5oyn4FfSuZ7F5gPDakoUUqVqhTmKbT.1 ",
-            dameunMomento: "dame un momento por favor, vamos a verificar.",
-            algoMas: "con mucho gusto, ¿hay algo más en lo que te podamos colaborar?"
-        };
+    <button class="hamburger" id="hamburger" aria-label="Abrir menú">
+      <span></span><span></span><span></span>
+    </button>
 
-        let mensajeActual = ""; 
-        let modifiers = {
-            hola: false,
-            momento: false,
-            ayuda: false,
-            gusto: false
-        };
+    <ul class="nav-links" id="navLinks">
+      <li><button class="nav-btn active" data-section="mensajes" onclick="mostrarSeccion('mensajes')">
+        <span class="nav-icon">💬</span> Mensajes de Soporte
+      </button></li>
+      <li><button class="nav-btn" data-section="agendamientos" onclick="mostrarSeccion('agendamientos')">
+        <span class="nav-icon">📅</span> Agendamientos y Enlaces
+      </button></li>
+      <li><button class="nav-btn" data-section="dividir" onclick="mostrarSeccion('dividir')">
+        <span class="nav-icon">📊</span> Dividir Archivos
+      </button></li>
+      <!--
+        PARA AGREGAR UNA NUEVA SECCIÓN EN EL FUTURO:
+        1. Copia una <li> de esta lista y cambia data-section, el ícono y el texto.
+        2. Crea el bloque <section class="tool-section" id="seccion-NOMBRE"> más abajo.
+        3. Si necesitas lógica propia, agrégala en script.js.
+        No se requiere tocar el resto del menú ni de las otras secciones.
+      -->
+      <li><button class="nav-btn nav-btn-placeholder" disabled title="Reservado para una futura herramienta">
+        <span class="nav-icon">➕</span> Próximamente
+      </button></li>
+    </ul>
+  </div>
+</nav>
 
-        function toggleModifier(type) {
-            modifiers[type] = !modifiers[type];
-            const btnId = type === 'hola' ? 'holaBtn' : 
-                          type === 'momento' ? 'dameMomentoBtn' : 
-                          type === 'ayuda' ? 'comoAyudarBtn' : 'conGustoBtn';
-            
-            // Aquí se gestiona el indicador visual del botón activo
-            document.getElementById(btnId).classList.toggle('active', modifiers[type]);
-            
-            if (mensajeActual) actualizarMensajeActual();
-        }
+<main class="page">
 
-        function mostrarMensaje(id) {
-            mensajeActual = id;
-            if (id === 'sinRespuesta') {
-                modifiers.hola = false;
-                document.getElementById('holaBtn').classList.remove('active');
-            }
-            actualizarMensajeActual();
-        }
+  <!-- ============ SECCIÓN 1: MENSAJES DE SOPORTE ============ -->
+  <section class="tool-section active" id="seccion-mensajes">
+    <div class="section-head">
+      <h1>Mensajes de Soporte</h1>
+      <p class="section-desc">Arma respuestas rápidas y personalizadas para tus conversaciones con clientes.</p>
+    </div>
 
-        function personalizarMensaje(mensaje) {
-            const nombre = document.getElementById("userInput").value.trim();
-            let mensajeFinal = mensaje.charAt(0).toUpperCase() + mensaje.slice(1);
-            const esMensajeExcluidoDeHola = mensaje.startsWith("Esperamos");
+    <div class="panel">
 
-            if (nombre) {
-                mensajeFinal = `${nombre}, ${mensajeFinal}`;
-            }
-            
-            if (modifiers.hola && !esMensajeExcluidoDeHola) {
-                if (nombre) {
-                    mensajeFinal = mensajeFinal.replace(`${nombre}, `, `Hola ${nombre}, `);
-                } else {
-                    mensajeFinal = `Hola, ${mensajeFinal}`;
-                }
-            }
-            
-            let suffix = "";
-            if (modifiers.gusto) suffix += (suffix ? " con" : " Con") + " mucho gusto.";
-            if (modifiers.momento) suffix += " Dame un momento por favor.";
-            if (modifiers.ayuda) suffix += (suffix ? " ¿cómo" : " ¿Cómo") + " puedo ayudarte?";
-            
+      <div class="toolbar-group">
+        <span class="toolbar-label">Cliente</span>
+        <input type="text" id="userInput" placeholder="Nombre del cliente (opcional)" oninput="actualizarMensajeActual()" />
+      </div>
 
-            if (suffix.length > 0) {
-                if (!mensajeFinal.trim().endsWith('.') && !mensajeFinal.trim().endsWith('!') && !mensajeFinal.trim().endsWith('?')) {
-                    mensajeFinal += ".";
-                }
-                mensajeFinal += suffix;
-            }
+      <div class="toolbar-group">
+        <span class="toolbar-label">Modificadores</span>
+        <div class="btn-row">
+          <button id="holaBtn" class="chip" onclick="toggleModifier('hola')">Hola (inicio)</button>
+          <button id="dameMomentoBtn" class="chip" onclick="toggleModifier('momento')">Dame un momento</button>
+          <button id="comoAyudarBtn" class="chip" onclick="toggleModifier('ayuda')">¿Cómo puedo ayudar?</button>
+          <button id="conGustoBtn" class="chip" onclick="toggleModifier('gusto')">Con mucho gusto</button>
+        </div>
+      </div>
 
-            return mensajeFinal;
-        }
+      <div class="toolbar-group">
+        <span class="toolbar-label">Mensajes</span>
+        <div class="btn-row">
+          <button class="chip chip-msg" onclick="mostrarMensaje('repcontingencia', event)">Caso asignado</button>
+          <button class="chip chip-msg" onclick="mostrarMensaje('daysMessage', event)">Saludo días</button>
+          <button class="chip chip-msg" onclick="mostrarMensaje('afternoonMessage', event)">Saludo tardes</button>
+          <button class="chip chip-msg" onclick="mostrarMensaje('pagoRealizadoMessage', event)">Confirmación de pago</button>
+          <button class="chip chip-msg" onclick="mostrarMensaje('pagoGraciasMessage', event)">Agradecimiento pago</button>
+          <button class="chip chip-msg" onclick="mostrarMensaje('solicitarLinkMessage', event)">Solicitud soporte pago</button>
+          <button class="chip chip-msg" onclick="mostrarMensaje('despedidaMessage', event)">Despedida</button>
+          <button class="chip chip-msg" onclick="mostrarMensaje('linkReunionMessage', event)">Enlace reunión</button>
+          <button class="chip chip-msg" onclick="mostrarMensaje('sinRespuesta', event)">Sin respuesta</button>
+          <button class="chip chip-msg" onclick="mostrarMensaje('linkPago', event)">Link de pago</button>
+          <button class="chip chip-msg" onclick="mostrarMensaje('reunionDudas', event)">Reunión de dudas</button>
+          <button class="chip chip-msg" onclick="mostrarMensaje('dameunMomento', event)">Dame un momento</button>
+          <button class="chip chip-msg" onclick="mostrarMensaje('algoMas', event)">¿Algo más?</button>
+          <button id="copyBtn" class="btn-primary btn-copy-inline" onclick="copiarTexto('messageBox')">📋 Copiar</button>
+        </div>
+      </div>
 
-        function actualizarMensajeActual() {
-            if (!mensajeActual) return;
-            const mensajeBase = mensajes[mensajeActual];
-            document.getElementById("messageBox").value = personalizarMensaje(mensajeBase);
-        }
+      <textarea id="messageBox" class="preview-box preview-box-sm" readonly placeholder="Selecciona un mensaje arriba para verlo aquí…"></textarea>
+    </div>
+  </section>
 
-        function mostrarNotificacionCopiado() {
-            const notification = document.getElementById('copy-notification');
-            notification.style.opacity = 1;
-            setTimeout(() => notification.style.opacity = 0, 2000);
-        }
+  <!-- ============ SECCIÓN 2: AGENDAMIENTOS Y ENLACES ============ -->
+  <section class="tool-section" id="seccion-agendamientos">
+    <div class="section-head">
+      <h1>Agendamientos y Enlaces</h1>
+      <p class="section-desc">Genera el mensaje de invitación y la confirmación de una reunión en segundos.</p>
+    </div>
 
-        function copiarTexto(elementId) {
-            const box = document.getElementById(elementId);
-            if (!box.value || box.value.includes('Ingresa los datos')) return;
-            box.select();
-            document.execCommand("copy");
-            mostrarNotificacionCopiado();
-        }
+    <div class="panel">
 
-        /* =======================================================
-         * SECCIÓN DE AGENDAMIENTOS
-         * ======================================================= */
-        const horarios = {
-            yeison: { '9am': 'https://us06web.zoom.us/j/86553506923', '11am': 'https://us06web.zoom.us/j/84015173788', '3pm': 'https://us06web.zoom.us/j/86502199583', '5pm': 'https://us06web.zoom.us/j/89901352812' },
-            paola: { '9am': 'https://us06web.zoom.us/j/84560427915', '12pm': 'https://us06web.zoom.us/j/87186962523', '4pm': 'https://us06web.zoom.us/j/81938853734' }
-        };
+      <div class="grid-2">
+        <div class="toolbar-group">
+          <span class="toolbar-label">Datos del cliente</span>
+          <input type="text" id="clienteData" placeholder="Ej: Lola, 3108765646" oninput="actualizarAgendamiento()" />
+        </div>
+        <div class="toolbar-group">
+          <span class="toolbar-label">Fecha de la reunión</span>
+          <input type="date" id="fechaAgendamiento" onchange="actualizarAgendamiento()">
+        </div>
+      </div>
 
-        let agenteSeleccionado = '';
-        let linkSeleccionado = '';
-        let horaSeleccionada = '';
+      <div class="toolbar-group">
+        <span class="toolbar-label">Agente</span>
+        <div class="btn-row">
+          <button class="chip chip-agent" id="btnYeison" onclick="seleccionarAgente('yeison')">Yeison</button>
+          <button class="chip chip-agent" id="btnPaola" onclick="seleccionarAgente('paola')">Paola</button>
+        </div>
+      </div>
 
-        function seleccionarAgente(agente) {
-            agenteSeleccionado = agente;
-            linkSeleccionado = '';
-            horaSeleccionada = '';
-            document.getElementById('btnYeison').classList.remove('active');
-            document.getElementById('btnPaola').classList.remove('active');
-            document.getElementById(`btn${agente.charAt(0).toUpperCase() + agente.slice(1)}`).classList.add('active');
+      <div class="toolbar-group">
+        <span class="toolbar-label">Hora disponible</span>
+        <div class="btn-row" id="agentTimes"></div>
+      </div>
 
-            const timesContainer = document.getElementById('agentTimes');
-            timesContainer.innerHTML = '';
-            const agentHorarios = horarios[agente];
+      <div class="toolbar-group">
+        <span class="toolbar-label">Copiar</span>
+        <div class="btn-row">
+          <button id="copyAgentBtn" class="btn-primary" onclick="copiarTexto('agendamientoOutput')">📋 Copiar agendamiento</button>
+          <button id="copyConfirmBtn" class="btn-primary" onclick="copiarTexto('confirmacionOutput')">📋 Copiar confirmación</button>
+        </div>
+      </div>
 
-            for (const hora in agentHorarios) {
-                const btn = document.createElement('button');
-                btn.className = 'msg-btn time-btn';
-                btn.textContent = hora;
-                btn.onclick = (e) => {
-                    linkSeleccionado = agentHorarios[hora];
-                    horaSeleccionada = hora;
-                    document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
-                    e.target.classList.add('active');
-                    actualizarAgendamiento();
-                };
-                timesContainer.appendChild(btn);
-            }
-            actualizarAgendamiento();
-        }
+      <div class="grid-2">
+        <div class="toolbar-group">
+          <span class="toolbar-label">Mensaje de agendamiento</span>
+          <textarea id="agendamientoOutput" class="preview-box preview-box-sm" readonly placeholder="El mensaje de agendamiento aparecerá aquí…"></textarea>
+        </div>
+        <div class="toolbar-group">
+          <span class="toolbar-label">Confirmación detallada</span>
+          <textarea id="confirmacionOutput" class="preview-box preview-box-sm" readonly placeholder="Selecciona fecha, hora y datos para generar la confirmación…"></textarea>
+        </div>
+      </div>
 
-        function formatFecha(fechaStr) {
-            if (!fechaStr) return "";
-            const fecha = new Date(fechaStr + 'T00:00:00');
-            const opciones = { weekday: 'long', day: '2-digit', month: 'long' };
-            let formateada = fecha.toLocaleDateString('es-ES', opciones);
-            return formateada.charAt(0).toUpperCase() + formateada.slice(1);
-        }
+    </div>
+  </section>
 
-        function actualizarAgendamiento() {
-            const datosCliente = document.getElementById('clienteData').value.trim();
-            const fechaInput = document.getElementById('fechaAgendamiento').value;
-            const outputBox = document.getElementById('agendamientoOutput');
-            const confirmBox = document.getElementById('confirmacionOutput');
+  <!-- ============ SECCIÓN 3: DIVIDIR ARCHIVOS ============ -->
+  <section class="tool-section" id="seccion-dividir">
+    <div class="section-head">
+      <h1>Dividir Archivos de Excel</h1>
+      <p class="section-desc">Sube un Excel, define cuántos registros quieres por archivo y descarga los resultados.</p>
+    </div>
 
-            const fechaTexto = formatFecha(fechaInput);
+    <div class="panel panel-narrow">
 
-            if (datosCliente && linkSeleccionado) {
-                outputBox.value = `${datosCliente} - únete a la reunión aquí: ${linkSeleccionado}`;
-            } else {
-                outputBox.value = 'Ingresa los datos del cliente y selecciona un agente y una hora.';
-            }
+      <div class="toolbar-group">
+        <span class="toolbar-label">1. Archivo Excel</span>
+        <div class="drop-zone" id="dropZone">
+          <div class="icon">📄</div>
+          <div>Arrastra el archivo aquí o haz clic para elegirlo</div>
+          <div class="field-hint">Formatos aceptados: .xlsx, .xls</div>
+          <div class="filename" id="fileName"></div>
+          <input type="file" id="fileInput" accept=".xlsx,.xls">
+        </div>
+      </div>
 
-            if (linkSeleccionado && horaSeleccionada && fechaInput) {
-                confirmBox.value = `Te confirmo que ya hemos agendado tu reunión.
-El día de la sesión te estaremos esperando en sala durante un máximo de 15 minutos ⏳.
-Por favor recuerda ingresar puntualmente para que podamos aprovechar al máximo el espacio juntos 🙌.
+      <div class="toolbar-group">
+        <span class="toolbar-label">2. Registros por archivo</span>
+        <input type="number" id="chunkSize" min="1" placeholder="Ej: 300">
+        <div class="field-hint" id="totalHint"></div>
+      </div>
 
-Te comparto el link de acceso: ${linkSeleccionado}
-${fechaTexto} a las ${horaSeleccionada}`;
-            } else {
-                confirmBox.value = "Faltan datos (Fecha u Hora) para generar la confirmación.";
-            }
-        }
-        
-        document.addEventListener('DOMContentLoaded', () => {
-             seleccionarAgente('yeison');
-        });
-    </script>
+      <button id="processBtn" class="btn-primary btn-block" disabled>Dividir archivo</button>
+      <div class="error" id="errorMsg"></div>
+      <div class="summary" id="summary"></div>
+
+      <div class="results-block" id="resultados">
+        <span class="toolbar-label">Archivos generados</span>
+        <button class="btn-success btn-block" id="downloadAllBtn">⬇ Descargar todos (.zip)</button>
+        <div id="resultList" class="result-list"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!--
+    ESPACIO RESERVADO PARA FUTURAS SECCIONES
+    Duplica esta plantilla y cambia el id / contenido cuando agregues una nueva herramienta.
+
+    <section class="tool-section" id="seccion-nueva-herramienta">
+      <div class="section-head">
+        <h1>Nombre de la herramienta</h1>
+        <p class="section-desc">Descripción breve de qué hace.</p>
+      </div>
+      <div class="panel">
+        ... contenido ...
+      </div>
+    </section>
+  -->
+
+</main>
+
+<script src="script.js"></script>
 </body>
 </html>
